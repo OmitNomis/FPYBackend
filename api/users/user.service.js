@@ -39,21 +39,20 @@ module.exports = {
   },
   updateUser: (data, callBack) => {
     pool.query(
-      `update user set firstName=?, lastName=?, gender=?, email=?, password=?, number=? where id = ?`,
+      `update user set firstName=?, lastName=?, email=?, city=?, countryID=? where userID = ?`,
       [
-        data.first_name,
-        data.last_name,
-        data.gender,
-        data.email,
-        data.password,
-        data.number,
-        data.id,
+        data.FirstName,
+        data.LastName,
+        data.Email,
+        data.City,
+        data.CountryId,
+        data.UserId,
       ],
       (error, results, fields) => {
         if (error) {
           callBack(error);
         }
-        return callBack(null, results[0]);
+        return callBack(null, results);
       }
     );
   },

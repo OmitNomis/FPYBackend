@@ -8,7 +8,7 @@ const {
 } = require("./user.controller");
 router.get("/", checkToken, getUsers);
 router.get("/:id", checkToken, getUserByUserId);
-router.patch("/updateuser", checkToken, updateUsers);
+router.post("/updateuser", checkToken, updateUsers);
 router.post("/deleteuser", checkToken, deleteUser);
 
 module.exports = router;
