@@ -15,13 +15,13 @@ module.exports = {
   },
   getUserByUserId: (id, callBack) => {
     pool.query(
-      `select userId,firstName,lastName,email,phone,city, countryId from user where userId = ?`,
+      `select userID,firstName,lastName,email,phone,city, countryID, startDate from user where userId = ?`,
       [id],
       (error, results, fields) => {
         if (error) {
           return callBack(error);
         }
-        return callBack(null, results[0]);
+        return callBack(null, results);
       }
     );
   },
@@ -58,8 +58,8 @@ module.exports = {
   },
   deleteUser: (data, callBack) => {
     pool.query(
-      `delete from user where userId = ?`,
-      [data.id],
+      `delete from user where userID = ?`,
+      [data.UserId],
       (error, results, fields) => {
         if (error) {
           callBack(error);
