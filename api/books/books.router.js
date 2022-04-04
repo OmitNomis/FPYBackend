@@ -11,6 +11,8 @@ const {
   getBookmarks,
   deleteBookmark,
   getGenres,
+  getPostGenre,
+  getPostsByUser,
 } = require("./books.controller");
 router.post("/add", checkToken, addPost);
 router.post("/delete", checkToken, deletePost);
@@ -20,6 +22,8 @@ router.post("/deleteBookmark", checkToken, deleteBookmark);
 router.get("/getBookmarks/:id", checkToken, getBookmarks);
 router.get("/getPostById/:id", checkToken, getPostById);
 router.get("/getSoldPosts/:id", checkToken, getSoldPosts);
+router.get("/getPostGenre/:id", checkToken, getPostGenre);
 router.get("/getPosts", checkToken, getPosts);
+router.get("/getPostsByUser/:id", checkToken, getPostsByUser);
 router.get("/getGenres", getGenres);
 module.exports = router;

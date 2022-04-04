@@ -3,7 +3,7 @@ const pool = require("../../config/database");
 module.exports = {
   addPost: (data, callBack) => {
     pool.query(
-      `insert into item(postId, title, author, price, priceType, delivery, bookCondition, location, trade, tradeWith, image, userId, postDate, sold) 
+      `insert into post(postID, title, author, price, priceType, delivery, bookCondition, location, trade, tradeWith, image, userId, postDate, sold) 
       values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
       [
         data.PostId,
@@ -28,18 +28,20 @@ module.exports = {
         return callBack(null, results);
       }
     );
-    data.GenreId.map((genre) => {
-      let postId = data.PostId;
-      pool.query(
-        `insert into itemgenre (genreID, postID) values (?,?)`,
-        [genre, postId],
-        (error, results, fields) => {
-          if (error) {
-            return callBack(error);
+    setTimeout(function () {
+      data.GenreId.map((genre) => {
+        let postId = data.PostId;
+        pool.query(
+          `insert into postgenre (genreID, postID) values (?,?)`,
+          [genre, postId],
+          (error, results, fields) => {
+            if (error) {
+              return callBack(error);
+            }
           }
-        }
-      );
-    });
+        );
+      });
+    }, 500);
   },
   bookmarkPost: (data, callBack) => {
     pool.query(
@@ -55,7 +57,7 @@ module.exports = {
   },
   deletePost: (data, callBack) => {
     pool.query(
-      `delete from itemgenre where postID = ?`,
+      `delete from postgenre where postID = ?`,
       [data.PostId],
       (error, results, fields) => {
         if (error) {
@@ -66,7 +68,7 @@ module.exports = {
     );
     setTimeout(() => {
       pool.query(
-        `delete from item where postID = ?`,
+        `delete from post where postID = ?`,
         [data.PostId],
         (error, results, fields) => {
           if (error) {
@@ -80,7 +82,7 @@ module.exports = {
   },
   soldPost: (data, callBack) => {
     pool.query(
-      `UPDATE item SET sold = '1' WHERE postID = ?`,
+      `UPDATE post SET sold = '1' WHERE postID = ?`,
       [data.PostId],
       (error, results, fields) => {
         if (error) {
@@ -104,13 +106,13 @@ module.exports = {
   },
   getSoldPosts: (userId, callBack) => {
     pool.query(
-      `SELECT * from item where userID =? and sold ='1'`,
+      `SELECT * from post where userID =? and sold ='1'`,
       [userId],
       (error, results, fields) => {
         if (error) {
           return callBack(error);
         }
-        return callBack(null, results[0]);
+        return callBack(null, results);
       }
     );
   },
@@ -126,7 +128,7 @@ module.exports = {
 
   getBookmarks: (userId, callBack) => {
     pool.query(
-      `SELECT * from item where postID in (select postID from bookmark where userID = ?)`,
+      `SELECT * from post where postID in (select postID from bookmark where userID = ?)`,
       // `select postID from bookmark where userID = ?`,
       [userId],
       (error, results, fields) => {
@@ -140,34 +142,51 @@ module.exports = {
 
   getPostById: (postId, callBack) => {
     pool.query(
-      `select * from item where postID = ?`,
+      `select * from post where postID = ?`,
       [postId],
       (error, results, fields) => {
         if (error) {
           return callBack(error);
         }
         return callBack(null, results[0]);
+      }
+    );
+  },
+
+  getPostsByUser: (userID, callBack) => {
+    pool.query(
+      `select * from post where userID = ?`,
+      [userID],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
       }
     );
   },
   getPostGenre: (postId, callBack) => {
     pool.query(
-      `select genreId from item where postID = ?`,
+      `select genreID from postGenre where postID = ?`,
       [postId],
       (error, results, fields) => {
         if (error) {
           return callBack(error);
         }
-        return callBack(null, results[0]);
+        return callBack(null, results);
       }
     );
   },
   getPosts: (callBack) => {
-    pool.query(`select * from item`, [], (error, results, fields) => {
-      if (error) {
-        callBack(error);
+    pool.query(
+      `select * from post where sold = 0`,
+      [],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        }
+        return callBack(null, results);
       }
-      return callBack(null, results);
-    });
+    );
   },
 };

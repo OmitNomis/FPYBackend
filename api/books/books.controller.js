@@ -10,6 +10,8 @@ const {
   getBookmarks,
   deleteBookmark,
   getGenres,
+  getPostGenre,
+  getPostsByUser,
 } = require("./books.service");
 
 module.exports = {
@@ -68,7 +70,7 @@ module.exports = {
         console.log(err);
         return res.status(500).json({
           success: 0,
-          message: "Error",
+          message: "Error Occured, Please Try Again",
         });
       }
       return res.status(200).json({
@@ -96,6 +98,44 @@ module.exports = {
       });
     });
   },
+  getPostsByUser: (req, res) => {
+    const id = req.params.id;
+    getPostsByUser(id, (err, results) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          message: "No Posts Yet",
+        });
+      }
+      return res.json({
+        success: 1,
+        data: results,
+      });
+    });
+  },
+  getPostGenre: (req, res) => {
+    const id = req.params.id;
+    getPostGenre(id, (err, results) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          message: "Error Loading Post Genre",
+        });
+      }
+      return res.json({
+        success: 1,
+        data: results,
+      });
+    });
+  },
   getSoldPosts: (req, res) => {
     const id = req.params.id;
     getSoldPosts(id, (err, results) => {
@@ -103,7 +143,7 @@ module.exports = {
         console.log(err);
         return;
       }
-      if (!results) {
+      if (results.length == 0) {
         return res.json({
           success: 0,
           message: "No books sold yet",
@@ -162,7 +202,7 @@ module.exports = {
         console.log(err);
         return;
       }
-      if (!results) {
+      if (results.length == 0) {
         return res.json({
           success: 0,
           message: "No bookmarks yet",
