@@ -5,7 +5,7 @@ module.exports = {
   register: (req, res) => {
     const body = req.body;
     const salt = genSaltSync(10);
-    body.password = hashSync(body.password, salt);
+    body.Password = hashSync(body.Password, salt);
     create(body, (err, results) => {
       if (err) {
         console.log(err);
