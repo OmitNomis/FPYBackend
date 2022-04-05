@@ -3,8 +3,11 @@ const {
   getUsers,
   updateUser,
   deleteUser,
+  getUserByUserEmail,
 } = require("./user.service");
 const { hashSync, genSaltSync } = require("bcrypt");
+const { compareSync } = require("bcrypt");
+const pool = require("../../config/database");
 
 module.exports = {
   getUserByUserId: (req, res) => {
@@ -50,6 +53,42 @@ module.exports = {
         success: 1,
         message: "updated successfully",
       });
+    });
+  },
+  changePassword: (req, res) => {
+    const body = req.body;
+    getUserByUserEmail(body.Email, (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+
+      const result = compareSync(body.OldPassword, results.password);
+
+      if (result) {
+        const salt = genSaltSync(10);
+        body.NewPassword = hashSync(body.NewPassword, salt);
+
+        pool.query(
+          `update user set password=? where email=?`,
+          [body.NewPassword, body.Email],
+          (error, results, fields) => {
+            if (error) {
+              console.log(error);
+            } else {
+              res.json({
+                success: 1,
+                message: "Password Successfully Changed",
+                result: results,
+              });
+            }
+          }
+        );
+      } else {
+        return res.json({
+          success: 0,
+          message: "Invalid Old Password",
+        });
+      }
     });
   },
   deleteUser: (req, res) => {
