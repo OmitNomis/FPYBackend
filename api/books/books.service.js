@@ -76,7 +76,7 @@ module.exports = {
           }
           return callBack(null, results);
         },
-        1000
+        500
       );
     });
   },

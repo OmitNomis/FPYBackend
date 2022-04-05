@@ -15,7 +15,7 @@ const {
   getPostsByUser,
 } = require("./books.controller");
 router.post("/add", checkToken, addPost);
-router.post("/delete", checkToken, deletePost);
+router.post("/deletePost", checkToken, deletePost);
 router.post("/sold", checkToken, soldPost);
 router.post("/bookmarkPost", checkToken, bookmarkPost);
 router.post("/deleteBookmark", checkToken, deleteBookmark);
