@@ -61,9 +61,8 @@ module.exports = {
       [data.PostId],
       (error, results, fields) => {
         if (error) {
-          return callBack(error);
+          console.log(error);
         }
-        return callBack(null, results);
       }
     );
     setTimeout(() => {
@@ -100,7 +99,6 @@ module.exports = {
         if (error) {
           console.log(error);
         }
-        console.log(results);
       }
     );
     setTimeout(function () {
@@ -112,7 +110,6 @@ module.exports = {
             if (error) {
               console.log(error);
             }
-            console.log(results);
           }
         );
       });

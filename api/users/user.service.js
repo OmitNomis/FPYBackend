@@ -39,13 +39,13 @@ module.exports = {
   },
   updateUser: (data, callBack) => {
     pool.query(
-      `update user set firstName=?, lastName=?, email=?, city=?, countryID=? where userID = ?`,
+      `update user set firstName=?, lastName=?, email=?, city=?, profileImage = ? where userID = ?`,
       [
         data.FirstName,
         data.LastName,
         data.Email,
         data.City,
-        data.CountryId,
+        data.ProfileImage,
         data.UserId,
       ],
       (error, results, fields) => {
