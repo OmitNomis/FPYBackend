@@ -8,6 +8,7 @@ const registerRouter = require("./api/register/register.router");
 const bookRouter = require("./api/books/books.router");
 
 const multer = require("multer");
+const pool = require("./config/database");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

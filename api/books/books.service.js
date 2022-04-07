@@ -92,6 +92,54 @@ module.exports = {
       }
     );
   },
+  editPost: (data, callBack) => {
+    pool.query(
+      `delete from postgenre where postID = ?`,
+      [data.PostId],
+      (error, results, fields) => {
+        if (error) {
+          console.log(error);
+        }
+        console.log(results);
+      }
+    );
+    setTimeout(function () {
+      data.GenreId.map((genre) => {
+        pool.query(
+          `insert into postgenre (genreID, postID) values (?,?)`,
+          [genre, data.PostId],
+          (error, results, fields) => {
+            if (error) {
+              console.log(error);
+            }
+            console.log(results);
+          }
+        );
+      });
+    }, 500);
+    pool.query(
+      `UPDATE post SET title = ?, author = ?, price = ?, priceType = ?, delivery = ?, bookCondition = ?, location = ?, trade = ?, tradeWith = ?, image = ? WHERE postID = ?`,
+      [
+        data.Title,
+        data.Autor,
+        data.Price,
+        data.PriceType,
+        data.Delivery,
+        data.BookCondition,
+        data.Location,
+        data.Trade,
+        data.TradeWith,
+        data.Image,
+        data.PostId,
+      ],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
   deleteBookmark: (data, callBack) => {
     pool.query(
       `delete from bookmark where postID = ? and userID = ?`,

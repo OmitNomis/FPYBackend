@@ -12,6 +12,7 @@ const {
   getGenres,
   getPostGenre,
   getPostsByUser,
+  editPost,
 } = require("./books.service");
 
 module.exports = {
@@ -66,6 +67,22 @@ module.exports = {
   soldPost: (req, res) => {
     const body = req.body;
     soldPost(body, (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          success: 0,
+          message: "Error Occured, Please Try Again",
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results,
+      });
+    });
+  },
+  editPost: (req, res) => {
+    const body = req.body;
+    editPost(body, (err, results) => {
       if (err) {
         console.log(err);
         return res.status(500).json({
