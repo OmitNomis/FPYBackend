@@ -33,6 +33,7 @@ app.post("/api/upload", upload.single("image"), (req, res) => {
   }
 });
 
+app.use(express.static("Uploads"));
 app.use(express.json());
 app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
