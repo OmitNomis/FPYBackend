@@ -15,7 +15,7 @@ module.exports = {
   },
   getUserByUserId: (id, callBack) => {
     pool.query(
-      `select userID,firstName,lastName,email,phone,city, countryID, startDate from user where userId = ?`,
+      `select userID,firstName,lastName,email,phone,city, countryID, profileImage, startDate from user where userId = ?`,
       [id],
       (error, results, fields) => {
         if (error) {
