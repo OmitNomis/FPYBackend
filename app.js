@@ -2,13 +2,20 @@ require("dotenv").config();
 
 const express = require("express");
 const app = express();
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
+
+const port = process.env.APP_PORT;
+
 const userRouter = require("./api/users/user.router");
 const loginRouter = require("./api/login/login.router");
 const registerRouter = require("./api/register/register.router");
 const bookRouter = require("./api/books/books.router");
+const chatRouter = require("./api/chat/chat.router");
 
 const multer = require("multer");
 const pool = require("./config/database");
+const res = require("express/lib/response");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -38,7 +45,16 @@ app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
 app.use("/api/register", registerRouter);
 app.use("/api/book", bookRouter);
+app.use("/api/chat", chatRouter);
 
-app.listen(process.env.APP_PORT, () => {
-  console.log("Server up and running :> on PORT :", process.env.APP_PORT);
+io.on("connection", (socket) => {
+  socket.on("chat message", (msg) => {
+    pool.query(
+      "insert into chatmessages (senderID, receiverID, message, dateTime) values (?, ?, ?, ?)",
+      [msg.SenderId, msg.ReceiverId, msg.Message, msg.DateTime]
+    );
+  });
+});
+server.listen(port, () => {
+  console.log("Server up and running :> on PORT :", port);
 });
