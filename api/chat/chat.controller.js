@@ -22,4 +22,44 @@ module.exports = {
       }
     );
   },
+  getExistingChat: (req, res) => {
+    const id = req.params.id;
+    var message = [];
+    pool.query(
+      `select max(messageID) as messageID from chatmessages group by senderID, receiverID having senderID = ? or receiverID = ? order by messageID desc;`,
+      [id, id],
+      (error, results, fields) => {
+        if (error) {
+          console.log(error);
+        } else {
+          message = results.map((item) => item.messageID);
+        }
+      }
+    );
+    setTimeout(() => {
+      console.log(message);
+      var arr = [];
+      if (message.length != 0) {
+        pool.query(
+          `select * from chatmessages where messageID in (?)`,
+          [message],
+          (error, results) => {
+            if (error) {
+              console.log(error);
+            } else {
+              res.status(200).json({
+                success: 1,
+                data: results,
+              });
+            }
+          }
+        );
+      } else {
+        res.status(200).json({
+          success: 0,
+          message: "No chat List Found",
+        });
+      }
+    }, 100);
+  },
 };

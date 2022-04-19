@@ -49,9 +49,11 @@ app.use("/api/chat", chatRouter);
 
 io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {
+    console.log(msg);
+    io.emit("chat message", msg);
     pool.query(
-      "insert into chatmessages (senderID, receiverID, message, dateTime) values (?, ?, ?, ?)",
-      [msg.SenderId, msg.ReceiverId, msg.Message, msg.DateTime]
+      `insert into chatmessages (senderID, receiverID, message, dateTime) values (?, ?, ?, ?)`,
+      [msg.senderID, msg.receiverID, msg.message, msg.dateTime]
     );
   });
 });
