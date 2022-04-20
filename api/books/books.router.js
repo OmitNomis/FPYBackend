@@ -14,8 +14,11 @@ const {
   getPostGenre,
   getPostsByUser,
   editPost,
+  getPostComments,
+  addComment,
 } = require("./books.controller");
 router.post("/add", checkToken, addPost);
+router.post("/addComment", checkToken, addComment);
 router.post("/deletePost", checkToken, deletePost);
 router.post("/sold", checkToken, soldPost);
 router.post("/bookmarkPost", checkToken, bookmarkPost);
@@ -27,5 +30,6 @@ router.get("/getSoldPosts/:id", checkToken, getSoldPosts);
 router.get("/getPostGenre/:id", checkToken, getPostGenre);
 router.get("/getPosts", checkToken, getPosts);
 router.get("/getPostsByUser/:id", checkToken, getPostsByUser);
+router.get("/getPostComments/:id", checkToken, getPostComments);
 router.get("/getGenres", getGenres);
 module.exports = router;

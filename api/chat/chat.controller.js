@@ -37,8 +37,6 @@ module.exports = {
       }
     );
     setTimeout(() => {
-      console.log(message);
-      var arr = [];
       if (message.length != 0) {
         pool.query(
           `select * from chatmessages where messageID in (?)`,

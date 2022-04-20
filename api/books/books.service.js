@@ -43,6 +43,19 @@ module.exports = {
       });
     }, 500);
   },
+  addComment: (data, callBack) => {
+    pool.query(
+      `insert into comments(comment, commenterID, postID, commentTime) 
+      values(?,?,?,?)`,
+      [data.Comment, data.CommenterId, data.PostId, data.CommentTime],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
   bookmarkPost: (data, callBack) => {
     pool.query(
       `insert into bookmark (userID, postID) values (?,?)`,
@@ -202,6 +215,18 @@ module.exports = {
     pool.query(
       `select * from post where userID = ?`,
       [userID],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+  getPostComments: (postID, callBack) => {
+    pool.query(
+      `SELECT u.firstName, u.lastName, u.profileImage, u.userID, c.* from user u join comments c on c.commenterID = u.userID where c.postID = ?;`,
+      [postID],
       (error, results, fields) => {
         if (error) {
           return callBack(error);

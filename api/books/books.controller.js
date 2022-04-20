@@ -13,12 +13,30 @@ const {
   getPostGenre,
   getPostsByUser,
   editPost,
+  getPostComments,
+  addComment,
 } = require("./books.service");
 
 module.exports = {
   addPost: (req, res) => {
     const body = req.body;
     addPost(body, (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          success: 0,
+          message: "Error",
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results,
+      });
+    });
+  },
+  addComment: (req, res) => {
+    const body = req.body;
+    addComment(body, (err, results) => {
       if (err) {
         console.log(err);
         return res.status(500).json({
@@ -126,6 +144,25 @@ module.exports = {
         return res.json({
           success: 0,
           message: "No Posts Yet",
+        });
+      }
+      return res.json({
+        success: 1,
+        data: results,
+      });
+    });
+  },
+  getPostComments: (req, res) => {
+    const id = req.params.id;
+    getPostComments(id, (err, results) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      if (results.length == 0) {
+        return res.json({
+          success: 0,
+          message: "No Comments Yet",
         });
       }
       return res.json({
