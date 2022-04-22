@@ -212,7 +212,7 @@ module.exports = {
   },
   getPostByGenre: (genreID, callBack) => {
     pool.query(
-      `select * from post where postID IN (Select postID from postgenre where genreID = ?)`,
+      `select * from post where postID IN (Select postID from postgenre where genreID = ? and sold = 0)`,
       [genreID],
       (error, results, fields) => {
         if (error) {
