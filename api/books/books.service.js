@@ -210,6 +210,18 @@ module.exports = {
       }
     );
   },
+  getPostByGenre: (genreID, callBack) => {
+    pool.query(
+      `select * from post where postID IN (Select postID from postgenre where genreID = ?)`,
+      [genreID],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
 
   getPostsByUser: (userID, callBack) => {
     pool.query(

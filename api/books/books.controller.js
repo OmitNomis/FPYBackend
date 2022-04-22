@@ -14,6 +14,7 @@ const {
   getPostsByUser,
   editPost,
   getPostComments,
+  getPostByGenre,
   addComment,
 } = require("./books.service");
 
@@ -117,6 +118,25 @@ module.exports = {
   getPostById: (req, res) => {
     const id = req.params.id;
     getPostById(id, (err, results) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          message: "Record not Found",
+        });
+      }
+      return res.json({
+        success: 1,
+        data: results,
+      });
+    });
+  },
+  getPostByGenre: (req, res) => {
+    const id = req.params.id;
+    getPostByGenre(id, (err, results) => {
       if (err) {
         console.log(err);
         return;

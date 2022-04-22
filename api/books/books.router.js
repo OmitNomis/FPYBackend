@@ -15,6 +15,7 @@ const {
   getPostsByUser,
   editPost,
   getPostComments,
+  getPostByGenre,
   addComment,
 } = require("./books.controller");
 router.post("/add", checkToken, addPost);
@@ -32,4 +33,5 @@ router.get("/getPosts", checkToken, getPosts);
 router.get("/getPostsByUser/:id", checkToken, getPostsByUser);
 router.get("/getPostComments/:id", checkToken, getPostComments);
 router.get("/getGenres", getGenres);
+router.get("/getPostByGenre/:id", getPostByGenre);
 module.exports = router;
