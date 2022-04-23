@@ -9,7 +9,7 @@ module.exports = {
         if (error) {
           return callBack(error);
         }
-        return callBack(null, results[0]);
+        return callBack(null, results);
       }
     );
   },
@@ -17,6 +17,18 @@ module.exports = {
     pool.query(
       `select userID,firstName,lastName,email,phone,city, countryID, profileImage, startDate from user where userId = ?`,
       [id],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+  getUserByPhone: (phone, callBack) => {
+    pool.query(
+      `select userID,firstName,lastName,email,phone,city, countryID, profileImage, startDate from user where phone = ?`,
+      [phone],
       (error, results, fields) => {
         if (error) {
           return callBack(error);

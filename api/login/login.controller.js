@@ -9,13 +9,13 @@ module.exports = {
       if (err) {
         console.log(err);
       }
-      if (!results) {
+      if (results.length == 0) {
         return res.json({
           success: 0,
           data: "The email has not been registered",
         });
       }
-      const result = compareSync(body.Password, results.password);
+      const result = compareSync(body.Password, results[0].password);
       if (result) {
         results.password = undefined;
         const jsontoken = sign({ result: results }, process.env.JWT_KEY, {
