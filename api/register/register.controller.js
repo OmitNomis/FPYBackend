@@ -36,7 +36,6 @@ module.exports = {
             phoneExists = false;
           }
           if (phoneExists == false) {
-            console.log("hehe");
             body.Password = hashSync(body.Password, salt);
             create(body, (err, results) => {
               if (err) {
