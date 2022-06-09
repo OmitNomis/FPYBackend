@@ -62,7 +62,7 @@ module.exports = {
         console.log(err);
       }
 
-      const result = compareSync(body.OldPassword, results.password);
+      const result = compareSync(body.OldPassword, results[0].password);
 
       if (result) {
         const salt = genSaltSync(10);

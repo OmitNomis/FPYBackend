@@ -14,6 +14,7 @@ const registerRouter = require("./api/register/register.router");
 const bookRouter = require("./api/books/books.router");
 const chatRouter = require("./api/chat/chat.router");
 const { hashSync, genSaltSync } = require("bcrypt");
+const { compareSync } = require("bcrypt");
 
 const multer = require("multer");
 const pool = require("./config/database");
@@ -121,6 +122,42 @@ app.post("/api/feedback", (req, res) => {
   };
 });
 
+app.post("/api/resetPassword", (req, res) => {
+  const body = req.body;
+  getUserByUserEmail(body.Email, (err, results) => {
+    if (err) {
+      console.log(err);
+    }
+    const result = compareSync(body.OldPassword, results[0].password);
+
+    if (result) {
+      const salt = genSaltSync(10);
+      body.NewPassword = hashSync(body.NewPassword, salt);
+
+      pool.query(
+        `update user set password=? where email=?`,
+        [body.NewPassword, body.Email],
+        (error, results, fields) => {
+          if (error) {
+            console.log(error);
+          } else {
+            res.json({
+              success: 1,
+              message: "Password Successfully Changed",
+              result: results,
+            });
+          }
+        }
+      );
+    } else {
+      return res.json({
+        success: 0,
+        message: "Invalid Old Password",
+      });
+    }
+  });
+});
+
 app.post("/api/reset", (req, res) => {
   const body = req.body;
   const newId = uuidv4().split("-")[0];
@@ -129,47 +166,52 @@ app.post("/api/reset", (req, res) => {
     if (err) {
       console.log(err);
     }
-    const salt = genSaltSync(10);
-    password = hashSync(newId, salt);
-
-    pool.query(
-      `update user set password=? where email=?`,
-      [password, body.Email],
-      (error, results, fields) => {
-        if (error) {
-          console.log(error);
-        } else {
-          res.json({
-            success: 1,
-            message: "Password Successfully Reset",
-            result: results,
-          });
-        }
-      }
-    );
-  });
-
-  var reply = {
-    from: "pickabooknp@outlook.com",
-    to: body.Email,
-    subject: "Reset Password Request",
-    text:
-      "Your Password has been Reset, Please Use the Following Password to change your password." +
-      "\n\n\n" +
-      "Password: " +
-      newId +
-      "\n\nRegards, \nPick A Book",
-  };
-  console.log(reply);
-
-  transporter.sendMail(reply, function (err, info) {
-    if (err) {
-      console.log(err);
-      res.status(400).json({
+    if (results.length == 0) {
+      return res.json({
         success: 0,
-        message: "Reset Password Failed",
+        data: "The email has not been registered",
       });
-      return;
+    } else {
+      const salt = genSaltSync(10);
+      password = hashSync(newId, salt);
+
+      pool.query(
+        `update user set password=? where email=?`,
+        [password, body.Email],
+        (error, results, fields) => {
+          if (error) {
+            console.log(error);
+          } else {
+            res.json({
+              success: 1,
+              message: "Password Successfully Reset",
+              result: results,
+            });
+            var reply = {
+              from: "pickabooknp@outlook.com",
+              to: body.Email,
+              subject: "Reset Password Request",
+              text:
+                "Your Password has been Reset, Please Use the Following Password to change your password." +
+                "\n\n\n" +
+                "Password: " +
+                newId +
+                "\n\nRegards, \nPick A Book",
+            };
+
+            transporter.sendMail(reply, function (err, info) {
+              if (err) {
+                console.log(err);
+                res.status(400).json({
+                  success: 0,
+                  message: "Reset Password Failed",
+                });
+                return;
+              }
+            });
+          }
+        }
+      );
     }
   });
 });
