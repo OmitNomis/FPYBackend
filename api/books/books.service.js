@@ -92,6 +92,18 @@ module.exports = {
       );
     });
   },
+  deleteComment: (data, callBack) => {
+    pool.query(
+      `delete from comments where commentID = ?`,
+      [data.CommentId],
+      (error, results, fields) => {
+        if (error) {
+          console.log(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
   soldPost: (data, callBack) => {
     pool.query(
       `UPDATE post SET sold = '1' WHERE postID = ?`,

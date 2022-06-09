@@ -16,11 +16,13 @@ const {
   editPost,
   getPostComments,
   getPostByGenre,
+  deleteComment,
   addComment,
 } = require("./books.controller");
 router.post("/add", checkToken, addPost);
 router.post("/addComment", checkToken, addComment);
 router.post("/deletePost", checkToken, deletePost);
+router.post("/deleteComment", checkToken, deleteComment);
 router.post("/sold", checkToken, soldPost);
 router.post("/bookmarkPost", checkToken, bookmarkPost);
 router.post("/deleteBookmark", checkToken, deleteBookmark);

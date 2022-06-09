@@ -2,6 +2,7 @@ const { response } = require("express");
 const {
   addPost,
   deletePost,
+  deleteComment,
   soldPost,
   getPostById,
   getPosts,
@@ -54,6 +55,22 @@ module.exports = {
   deletePost: (req, res) => {
     const body = req.body;
     deletePost(body, (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          success: 0,
+          message: "Error",
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results,
+      });
+    });
+  },
+  deleteComment: (req, res) => {
+    const body = req.body;
+    deleteComment(body, (err, results) => {
       if (err) {
         console.log(err);
         return res.status(500).json({
