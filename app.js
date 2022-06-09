@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
+const nodemailer = require("nodemailer");
 
 const port = process.env.APP_PORT;
 
@@ -58,4 +59,62 @@ io.on("connection", (socket) => {
 });
 server.listen(port, () => {
   console.log("Server up and running :> on PORT :", port);
+});
+
+const transporter = nodemailer.createTransport({
+  service: "hotmail",
+
+  auth: {
+    user: "pickabooknp@outlook.com",
+    pass: "PasswordForProject",
+  },
+});
+
+app.post("/api/feedback", (req, res) => {
+  const body = req.body;
+
+  var feedback = {
+    from: "pickabooknp@outlook.com",
+    to: "pickabooknp@outlook.com",
+    subject: "Pick-A-Book Application Feedback",
+    text:
+      "Sent By: " +
+      body.UserName +
+      "\n By Email: " +
+      body.UserEmail +
+      "\nFeedback: " +
+      body.Feedback,
+  };
+
+  transporter.sendMail(feedback, function (err, info) {
+    if (err) {
+      console.log(err);
+      res.status(400).json({
+        success: 0,
+        message: "Feedback Failed",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: 1,
+      data: info,
+    });
+    transporter.sendMail(reply, function (err, info) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+    });
+  });
+
+  var reply = {
+    from: "pickabooknp@outlook.com",
+    to: body.UserEmail,
+    subject: "Thank you for the Feedback - Pick A Book",
+    text:
+      "Dear " +
+      body.UserName +
+      ", \n" +
+      "Thank you for the feedback to our Application. We are determined to provide a good service to our customers. \n Regards, \n Pick A Book",
+  };
 });
